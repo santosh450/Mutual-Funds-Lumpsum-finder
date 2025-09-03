@@ -1,0 +1,23 @@
+name: Daily MF LumpSum Finder Test Run
+
+on:
+  schedule:
+    - cron: '30 0 * * *'  # Runs daily at 6 AM IST
+  workflow_dispatch:     # Allows manual trigger from GitHub UI
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'  # or your preferred version
+
+      - name: Run Maven Tests
+        run: mvn clean test
