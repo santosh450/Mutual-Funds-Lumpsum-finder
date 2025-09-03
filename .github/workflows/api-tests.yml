@@ -21,3 +21,9 @@ jobs:
 
       - name: Run Maven Tests
         run: mvn clean test
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: reports/
