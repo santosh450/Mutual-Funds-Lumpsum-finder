@@ -1,19 +1,29 @@
 package org.myprojects.utils;
 
+import org.myprojects.Constants.FrameworkConstants;
 import org.myprojects.reports.Log4jLogger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v133.emulation.Emulation;
+import org.openqa.selenium.devtools.v133.page.Page;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 
 public final class ReportUtils {
 
-    private ReportUtils(){}
+    private ReportUtils() {
+    }
 
 
     public static void generateHtmlReport(List<LinkedHashMap<String, String>> dataList) {
@@ -29,7 +39,7 @@ public final class ReportUtils {
         html.append("<style>");
         html.append("body {font-family: 'Roboto', sans-serif; margin: 20px; background-color: #f9f9f9;}");
         html.append("h2 {text-align: center; color: #333;}");
-        html.append("table {border-collapse: collapse; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}");
+        html.append("table {border-collapse: collapse; width: auto; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}");
         html.append("th, td {border: 1px solid #ddd; padding: 12px; text-align: center;}");
         html.append("th {background-color: #4CAF50; color: white;}");
         html.append("tr:hover {background-color: #c8e6c9;}");
@@ -54,7 +64,6 @@ public final class ReportUtils {
             LinkedHashMap<String, String> row = dataList.get(i);
             String bgColor = (i < half) ? "#fff3e0" : "#e3f2fd"; // light orange / light blue
             html.append("<tr style='background-color:").append(bgColor).append(";'>");
-
             for (String header : headers) {
                 String value = row.get(header);
                 if (value != null && value.startsWith("-")) {
@@ -63,19 +72,18 @@ public final class ReportUtils {
                     html.append("<td>").append(value != null ? value : "").append("</td>");
                 }
             }
-
             html.append("</tr>");
         }
-
         html.append("</table></body></html>");
 
         // Save HTML file
         try {
-            Files.write(Paths.get("reports/MutualFundReport.html"), html.toString().getBytes());
+            Files.write(Paths.get(FrameworkConstants.HTMLREPORT_PATH), html.toString().getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        Log4jLogger.info("✅ Modern HTML Report generated: MutualFundReport.html");
+        Log4jLogger.info("Modern HTML Report generated: MutualFundReport.html");
     }
+
 }

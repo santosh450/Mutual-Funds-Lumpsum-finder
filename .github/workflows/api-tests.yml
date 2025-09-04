@@ -21,9 +21,13 @@ jobs:
 
       - name: Run Maven Tests
         run: mvn clean test
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: reports/
+

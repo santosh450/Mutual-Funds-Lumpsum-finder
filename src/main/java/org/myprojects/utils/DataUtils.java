@@ -27,7 +27,6 @@ public final class DataUtils {
     }
 
     private static String getChangeFromMinimum(HashMap<String, Float> data, PeriodOfTime time){
-
         ArrayList<Float> navs = new ArrayList<>(getRequiredPeriodOfData(data, time).values());
         float todayNav = navs.get(0);
         Log4jLogger.info("Current NAV: "+todayNav);
@@ -44,7 +43,6 @@ public final class DataUtils {
     }
 
     private static String getChangeFromMaximum(HashMap<String, Float> data, PeriodOfTime time){
-
         ArrayList<Float> navs = new ArrayList<>(getRequiredPeriodOfData(data, time).values());
         float todayNav = navs.get(0);
         Log4jLogger.info("Current NAV: "+todayNav);
@@ -62,14 +60,17 @@ public final class DataUtils {
 
     public static List<LinkedHashMap<String, String>> getLumpSumData(int[] mfIDs, ChangeType type) {
         List<LinkedHashMap<String, String>> dataList = new ArrayList<>();
-
         for (int id : mfIDs) {
-            Response response = RequestBuilder.getRequest(id);
+            Response response = RequestBuilder.getMFRequest(id);
             String mfName = JsonUtils.getMFName(response);
             LinkedHashMap<String, Float> navData = JsonUtils.getNavData(response);
 
             LinkedHashMap<String, String> mfData = new LinkedHashMap<>();
-            mfData.put("MF Name", type.name() + "-" + mfName);
+//          mfData.put("MF Name", type.name() + "-" + mfName);
+
+            // Extract "Index Name" from the MF name using regex
+            mfData.put("MF Name", mfName.replaceFirst("(?i).*?\\b(Nifty.*?)\\s+Index\\b.*", "$1").trim()
+            );
 
             for (PeriodOfTime period : PeriodOfTime.values()) {
                 String value = (type == ChangeType.MIN)
@@ -77,10 +78,8 @@ public final class DataUtils {
                         : DataUtils.getChangeFromMaximum(navData, period);
                 mfData.put(period.name(), value);
             }
-
             dataList.add(mfData);
         }
-
         return dataList;
     }
 

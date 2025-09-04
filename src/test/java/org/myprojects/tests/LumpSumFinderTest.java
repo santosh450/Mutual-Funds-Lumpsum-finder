@@ -1,9 +1,12 @@
 package org.myprojects.tests;
 
 import org.junit.Test;
+import org.myprojects.Constants.FrameworkConstants;
 import org.myprojects.enums.ChangeType;
+import org.myprojects.restassured.RequestBuilder;
 import org.myprojects.utils.DataUtils;
 import org.myprojects.utils.ReportUtils;
+import org.myprojects.utils.SeleniumUtils;
 
 import java.util.*;
 
@@ -19,6 +22,12 @@ public class LumpSumFinderTest {
         reportData.addAll(DataUtils.getLumpSumData(mfIDs, ChangeType.MAX));
 
         ReportUtils.generateHtmlReport(reportData);
+
+        try {
+            RequestBuilder.sendReportToTelegram(SeleniumUtils.captureReport(FrameworkConstants.HTMLREPORT_PATH));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
